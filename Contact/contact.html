@@ -1,0 +1,181 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="contact form">
+    <meta name="author" content="Justin Alderson">
+   
+
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="icon" href="" type="image/x-icon">
+    <title>App</title>
+
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="contactStyle.css" rel="stylesheet">
+   
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+     <script>
+     $(document).ready(function(){
+         
+         
+         $('#myForm').submit(function(event){
+             var ok = false;
+             //Remove the errors from form. alert class divs.. When buuton pushed..
+             $(".alert").remove();
+             
+             var formData = {
+                    'email'   : $('input[name=email]').val(),
+                    'subject' : $('input[name=subject]').val(),
+                    'body'    : $('textarea[name=body]').val()
+            };
+            //Set up ajax..
+            $.ajax({
+                type : 'POST', 
+                url:"contactCode.php",//need to use separate php file...
+                data    : formData, 
+                dataType: 'json', 
+                encode  : true})
+                
+                .done(function(data) {
+
+                  console.log(data);
+                
+                    if(!data.succes){
+                        //Deal with various errors..
+                         console.log(data);
+                        if(data.errors.email){
+                            $("#errorMessage").append('<div class="alert alert-danger" role="alert">Need an email address to submit enquiry.</div>');
+                        }
+                       
+                         if(data.errors.validation){
+                            $("#errorMessage").append('<div class="alert alert-danger" role="alert">Need a valid email address to submit enquiry.</div>');
+                        }
+                       
+                        if(data.errors.subject){
+                            $("#errorMessage").append('<div class="alert alert-danger" role="alert">Please enter a subject for this enquiry.</div>');
+                        }
+                        
+                        if(data.errors.body){
+                            $("#errorMessage").append('<div class="alert alert-danger" role="alert">Please tell us some details about this enquiry.</div>');
+                        }
+                        
+                        if(data.errors.mail){
+                             $("#errorMessage").append('<div class="alert alert-danger" role="alert">Sorry, we were unable to process your enquiry. Email Server Failure.</div>');
+                        }
+                    }else{
+                        //Everthing went well..
+                         window.location.href ="success.html";
+                         console.log(data);
+                    }
+                }).fail(function(data){
+                  console.log(data);//This will run if cannot connect to database.
+                         $("#errorMessage").append('<div class="alert alert-danger" role="alert">Sorry, we were unable to process your enquiry. Database Failure. Contact Developement Team</div>');
+                });
+             
+             //return ok;
+            event.preventDefault();           
+        });
+            
+    });
+   
+    
+    </script>
+  
+</head>
+   
+<body> 
+    <main role="main">
+    
+        <div class="jumbotron jumbotron-fluid" id="my-jumbo">
+          <div class="row">
+             
+             <div class="col-lg-12 col-md-12 col-sm-12" align="left" id="my-twitter">
+                
+                 <div class="container" id="left-top-con">
+                    <div class="row" >
+                        <h1 class="display-4 text-white" id="text-title-three">Contact us with any enquiries.</h1>
+                   </div>
+                      <div class="row" >
+                      <p class="lead text-white" id="text-title">Applications of all shape and sizes.</p>
+                        <p class="lead text-white" id="text-title-two">Using the latest technolgies.</p>
+                     </div>
+                        <hr id="hr-one">
+                        <hr id="hr-two">
+                        <hr id="hr-three">
+                        <hr id="hr-four">
+                        <hr id="hr-five">   
+                </div>
+            </div>
+
+           
+        </div>
+        <nav class="navbar">
+          <ul class="nav">
+              <li class="nav-item">
+                <p class="nav-link active"><a class="text-white" href="">Index</a></p>
+              </li>
+              <li class="nav-item">
+                 <p class="nav-link active"><a class="text-white" href="contact.html">Contact</a></p>
+              </li>
+               <li class="nav-item">
+                 <p class="nav-link active"><a class="text-white" href="">About</a></p>
+              </li>
+            </ul>
+            <ul class="nav">
+                <li class="nav-item">
+                     <p class="nav-link active"><a class="fa fa-twitter" href="https://twitter.com" target="_blank"></a></p>
+                </li>
+            </ul>
+        </nav>
+    </div>
+        
+        <div class="container" id="central">
+     
+          <main role="main">
+             <div class="jumbotron">
+                <div id="errorMessage"> 
+                   
+                </div>
+                 <form id="myForm" action="" method="POST" role="form">
+                  <div class="form-group" id="email-group">
+                    <label for="email" class="text-white">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email" required >
+                  </div>
+                  <div class="form-group">
+                    <label for="subject" class="text-white">Subject</label>
+                    <input type="text" class="form-control" id="subject" placeholder="App Developement" 
+                          title="Subject should contain more than one letter."
+                           name="subject" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="body" class="text-white">Message</label>
+                    <textarea class="form-control" id="body" rows="6" name="body"
+                              placeholder="Build me a cool app." required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-dark mb-2" name="enquire">Send</button>
+                </form>
+             </div>
+         </main>
+    </div>
+    
+ 
+    </main> 
+  
+   <footer class="text-white">
+        <div id="bottom">
+              <div class="container-my">
+                <p class="lead text-white">App</p>
+              </div>
+        </div>
+    </footer>
+   
+</body>
+
